@@ -3,7 +3,7 @@ color desert
 syntax on
 
 " Tabs 4 spaces wide, use real tabs not spaces
-set noexpandtab
+set expandtab
 set tabstop=4
 
 " Show line numbers
