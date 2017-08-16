@@ -1,3 +1,6 @@
+set titlestring=vim\ %{substitute(getcwd(),\ $HOME,\ '~',\ '')}
+set title
+
 set nocompatible
 set hidden
 set backspace=indent,eol,start
