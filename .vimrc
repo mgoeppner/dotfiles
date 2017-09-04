@@ -19,11 +19,17 @@ color desert
 syntax on
 
 " Show line numbers
-set number
+set number relativenumber
+
+augroup numbertoggle
+    autocmd!
+    autocmd BufEnter,FocusGained,InsertLeave * set relativenumber
+    autocmd BufLeave,FocusLost,InsertEnter * set norelativenumber
+augroup END
 
 " Show whitespace
 set listchars=eol:¬,tab:>-,trail:~,extends:>,precedes:<,space:·
-set list
+set nolist
 
 " Tab configuration
 set tabstop=4 shiftwidth=4 expandtab smarttab
@@ -59,7 +65,7 @@ Plug 'nelsyeung/twig.vim'
 call plug#end()
 
 let g:airline_powerline_fonts=1
-let g:airline_theme='powerlineish'
+let g:airline_theme='angr'
 let g:airline_skip_empty_sections=1
 let g:airline_section_z=airline#section#create(['windowswap', '%3p%% ', 'linenr', ':%3v'])
 let g:airline#extensions#tabline#enabled=1
@@ -82,12 +88,28 @@ let g:ale_php_phpcs_standard='PSR2'
 command W w
 command Wq wq
 
+" Navigation
 nmap <Tab> :bnext<cr>
 nmap <S-Tab> :bprevious<cr>
 nmap <backspace> :NERDTreeToggle<cr>
-nmap <Leader>f :Ag<space>
+
+" Command list
+nmap <Leader>: :Commands<cr>
+
+" Code searching
+nmap <Leader><S-f> :Ag<space>
+nmap <Leader>f :Ag<space><C-R><C-W><cr>
+nmap <Leader>/ :BLines<space>
 nmap <Leader>t :BTag<cr>
 nmap <Leader><S-t> :Tags<space>
+
+" Buffer and file navigation
 nmap <Leader>` :Buffers<cr>
 nmap <Leader><S-tab> :GFiles?<cr>
 nmap <Leader><tab> :Files<cr>
+
+" Toggle whitespace
+nmap <Leader>w :set list!<cr>
+
+" Remap Ctrl-W to Space
+nnoremap <Space> <C-w>
