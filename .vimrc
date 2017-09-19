@@ -65,7 +65,7 @@ Plug 'nelsyeung/twig.vim'
 call plug#end()
 
 let g:airline_powerline_fonts=1
-let g:airline_theme='angr'
+let g:airline_theme='powerlineish'
 let g:airline_skip_empty_sections=1
 let g:airline_section_z=airline#section#create(['windowswap', '%3p%% ', 'linenr', ':%3v'])
 let g:airline#extensions#tabline#enabled=1
@@ -84,6 +84,8 @@ let g:airline_symbols.linenr='¶'
 
 " Linter conf
 let g:ale_php_phpcs_standard='PSR2'
+
+let $FZF_DEFAULT_COMMAND = 'ag -g ""'
 
 command W w
 command Wq wq
