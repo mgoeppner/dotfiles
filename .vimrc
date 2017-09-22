@@ -1,6 +1,9 @@
 set titlestring=vim\ %{substitute(getcwd(),\ $HOME,\ '~',\ '')}
 set title
 
+" Store swap files at ~/.vim/swp
+set directory^=$HOME/.vim/swp//
+
 set nocompatible
 set hidden
 set backspace=indent,eol,start
