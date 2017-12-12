@@ -1,0 +1,30 @@
+# Include PEAR for PHP executables
+export PATH=$PATH:/var/opt/pear/bin
+
+# Source directories
+export WEBSITE_SRC_DIR="${HOME}/Dev/website"
+export PAYMENTS_SRC_DIR="${HOME}/Dev/payments"
+export CRUSADER_SRC_DIR="${HOME}/Dev/crusader"
+
+# Networking aliases
+alias wifi-work="sudo netctl start wlp4s0-Spotify"
+alias vpn-start="/var/opt/forticlient/64bit/forticlientsslvpn_cli -s vpn.spotify.net:443 --vpnuser mikegoeppner --keepalive"
+alias vpn-stop="pkill -9 forticlientsslvpn_cli"
+
+# Other aliases
+alias www-prod-status="helios -d gew1,gae2,guc3 status -j website-release:production -u mikegoeppner"
+
+alias fix-screens="xrandr --output DisplayPort-1 --right-of eDP --output DisplayPort-0 --right-of DisplayPort-1 --rotate left"
+
+# Google Cloud SDK
+export GOOGLE_CLOUD_SDK_DIR="/var/opt/google-cloud-sdk"
+
+# The next line updates PATH for the Google Cloud SDK.
+test -e "${GOOGLE_CLOUD_SDK_DIR}/path.zsh.inc" && source "${GOOGLE_CLOUD_SDK_DIR}/path.zsh.inc"
+
+# The next line enables shell command completion for gcloud.
+test -e "${GOOGLE_CLOUD_SDK_DIR}/completion.zsh.inc" && source "${GOOGLE_CLOUD_SDK_DIR}/completion.zsh.inc"
+
+function docker-host-ip() {
+    sudo ip -o -4 addr show docker0 | awk '{ print $4 }' | cut -d/ -f1
+}

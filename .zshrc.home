@@ -1,0 +1,1 @@
+alias wifi-home="sudo netctl start wlp4s0-OWNIT_27"
