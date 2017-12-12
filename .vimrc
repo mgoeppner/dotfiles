@@ -12,6 +12,8 @@ set shortmess=I
 
 set tags=.git/tags
 
+set clipboard=unnamed
+
 " Powerline supporting settings
 set laststatus=2
 set showtabline=2
@@ -61,8 +63,8 @@ Plug 'tpope/vim-fugitive'
 
 " Language
 Plug 'pangloss/vim-javascript'
-Plug 'faith/vim-go'
 Plug 'mxw/vim-jsx'
+Plug 'shawncplus/phpcomplete.vim'
 Plug 'nelsyeung/twig.vim'
 
 call plug#end()
@@ -92,6 +94,8 @@ let $FZF_DEFAULT_COMMAND = 'ag -g ""'
 
 command W w
 command Wq wq
+
+command GenerateCTags !ctags -f ./.git/tags
 
 " Navigation
 nmap <Tab> :bnext<cr>
