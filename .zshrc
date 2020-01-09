@@ -1,55 +1,69 @@
 export DEFAULT_USER=mgoeppner
+export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 export EDITOR='vim'
-export TERMINAL=urxvt
-export ZSH=/home/mgoeppner/.cache/oh-my-zsh
+export POWERLINE="/usr/local/lib/python2.7/site-packages/powerline"
 
 export XDG_CACHE_HOME=${HOME}/.cache
 export XDG_CONFIG_HOME=${HOME}/.config
 export XDG_DATA_HOME=${HOME}/.config
 
-test -e ~/.secrets && source ~/.secrets
-
-if [ -z "$SSH_AGENT_PID" ]; then
-    eval $(ssh-agent -s) && ssh-add ~/.ssh/id_rsa
+if [ ! -d ${XDG_CACHE_HOME} ]; then
+    mkdir -p ${XDG_CACHE_HOME}
 fi
 
-plugins=(vi-mode)
-
-OH_MY_ZSH="${ZSH}/oh-my-zsh.sh"
-test -e ${OH_MY_ZSH} && source ${OH_MY_ZSH}
-
-POWERLINE=/usr/lib/python3.6/site-packages/powerline/bindings/zsh/powerline.zsh
-
-if [ "$WINDOWID" ]; then
-    test -e ${POWERLINE} && source ${POWERLINE}
+if [ ! -d ${XDG_CONFIG_HOME} ]; then
+    mkdir -p ${XDG_CONFIG_HOME}
 fi
+
+if [ ! -d ${XDG_DATA_HOME} ]; then
+    mkdir -p ${XDG_DATA_HOME}
+fi
+
+# History file configuration
+[ -z "${HISTFILE}" ] && HISTFILE="${HOME}/.zsh_history"
+HISTSIZE=50000
+SAVEHIST=10000
+
+# History command configuration
+setopt extended_history       # record timestamp of command in HISTFILE
+setopt hist_expire_dups_first # delete duplicates first when HISTFILE size exceeds HISTSIZE
+setopt hist_ignore_dups       # ignore duplicated commands history list
+setopt hist_ignore_space      # ignore commands that start with space
+setopt hist_verify            # show command with history expansion to user before running it
+setopt inc_append_history     # add commands to HISTFILE in order of execution
+setopt share_history          # share command history data
+
+test -e ~/.zshrc.vimode && source ~/.zshrc.vimode
+
+POWERLINE_ZSH=${POWERLINE}/bindings/zsh/powerline.zsh
+test -e ${POWERLINE_ZSH} && powerline-daemon -q && source ${POWERLINE_ZSH}
 
 # Aliases
 alias cls="clear"
+alias ff="find . | fzf"
 alias zshconfig="${EDITOR} ~/.zshrc ~/.zshrc.home ~/.zshrc.work"
-alias pbcopy="xclip -selection clipboard"
-alias pbpaste="xclip -selection clipboard -o"
+alias powerlineconfig="${EDITOR} ~/.config/powerline"
 
+test -e ~/.zshrc.secrets && source ~/.zshrc.secrets
 test -e ~/.zshrc.home && source ~/.zshrc.home
 test -e ~/.zshrc.work && source ~/.zshrc.work
 
-function set-brightness() {
-    echo $1 | sudo tee /sys/class/backlight/gmux_backlight/brightness;
-}
+# Setup pyenv and pyenv-virtualenv
+export PYENV_VIRTUALENV_DISABLE_PROMPT=1
+if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
+if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi
 
-function set-kbd-brightness() {
-    echo $1 | sudo tee /sys/class/leds/smc::kbd_backlight/brightness;
-}
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
-function toggle-kbd-layout() {
-    if [ "$(setxkbmap -query | awk '/layout/ {print $2}')" = "us" ]; then
-        setxkbmap se;
-        rivalcfg -c blue -e steady;
-        return 0;
-    fi
+DEFAULT_TMUX_SESSION="shell"
+if [ -z "$TMUX" ]; then
+    if [ -z $(tmux ls -F "#{session_name}" | grep ${DEFAULT_TMUX_SESSION}) ]; then
+        exec tmux new -s ${DEFAULT_TMUX_SESSION}
+    else
+        session=$(tmux list-sessions -F "#{session_name}" 2>/dev/null | fzf --exit-0)
+        exec tmux attach -t ${session}
+    fi 
+fi
 
-    setxkbmap us;
-    rivalcfg -c red -e steady;
-    return 0;
-}
+

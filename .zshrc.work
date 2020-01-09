@@ -1,23 +1,18 @@
 # Include PEAR for PHP executables
 export PATH=$PATH:/var/opt/pear/bin
-
-# Source directories
-export WEBSITE_SRC_DIR="${HOME}/Dev/website"
-export PAYMENTS_SRC_DIR="${HOME}/Dev/payments"
-export CRUSADER_SRC_DIR="${HOME}/Dev/crusader"
-
-# Networking aliases
-alias wifi-work="sudo netctl start wlp4s0-Spotify"
-alias vpn-start="/var/opt/forticlient/64bit/forticlientsslvpn_cli -s vpn.spotify.net:443 --vpnuser mikegoeppner --keepalive"
-alias vpn-stop="pkill -9 forticlientsslvpn_cli"
+export PATH=$PATH:/Applications/Postgres.app/Contents/Versions/9.3/bin
+export PATH=$PATH:~/Dev/sprocket/bin
+export PATH=$PATH:/Users/mgoeppner/Library/Android/sdk/tools/bin
+export PATH=$PATH:/Users/mgoeppner/Library/Android/sdk/platform-tools
+export PATH=$PATH:~/.jenv/bin
 
 # Other aliases
-alias www-prod-status="helios -d gew1,gae2,guc3 status -j website-release:production -u mikegoeppner"
-
-alias fix-screens="xrandr --output DisplayPort-1 --right-of eDP --output DisplayPort-0 --right-of DisplayPort-1 --rotate left"
+alias www-prod-status="helios -d gew1,gae2,guc3 status -j www-agent-tingle -u mikegoeppner"
+alias www-testing-status="helios -d gew1,gae2,guc3 status -j website-release:testing -u mikegoeppner"
+alias www-staging-status="helios -d gew1,gae2,guc3 status -j website-release:staging -u mikegoeppner"
 
 # Google Cloud SDK
-export GOOGLE_CLOUD_SDK_DIR="/var/opt/google-cloud-sdk"
+export GOOGLE_CLOUD_SDK_DIR="/Users/mgoeppner/google-cloud-sdk"
 
 # The next line updates PATH for the Google Cloud SDK.
 test -e "${GOOGLE_CLOUD_SDK_DIR}/path.zsh.inc" && source "${GOOGLE_CLOUD_SDK_DIR}/path.zsh.inc"
@@ -28,3 +23,57 @@ test -e "${GOOGLE_CLOUD_SDK_DIR}/completion.zsh.inc" && source "${GOOGLE_CLOUD_S
 function docker-host-ip() {
     sudo ip -o -4 addr show docker0 | awk '{ print $4 }' | cut -d/ -f1
 }
+
+function get-spotify-user-id() {
+    jhurl -s "services.gew1.spotify.net" -X GET "hm://userdata/account?username=${1}" -p | jq ".[].user_id" --raw-output
+}
+
+function get-spotify-user-name() {
+    jhurl -s "services.gew1.spotify.net" -X GET "hm://userdata/account?user_id=${1}" -p | jq ".[].username" --raw-output
+}
+
+function srv() {
+    dig _spotify-${1}._${2}.services.${3}.spotify.net srv +short
+}
+
+function srv-lookup() {
+    echo '=========== HTTP ============'
+    echo '----------- gew1 ------------'
+    dig _spotify-${1}._http.services.gew1.spotify.net srv +short
+    echo '----------- gae2 ------------'
+    dig _spotify-${1}._http.services.gae2.spotify.net srv +short
+    echo '----------- guc3 ------------'
+    dig _spotify-${1}._http.services.guc3.spotify.net srv +short
+    echo '============================='
+    echo ''
+    echo '============ HM ============='
+    echo '----------- gew1 ------------'
+    dig _spotify-${1}._hm.services.gew1.spotify.net srv +short
+    echo '----------- gae2 ------------'
+    dig _spotify-${1}._hm.services.gae2.spotify.net srv +short
+    echo '----------- guc3 ------------'
+    dig _spotify-${1}._hm.services.guc3.spotify.net srv +short
+    echo '============================='
+    echo ''
+    echo '=========== GRPC ============'
+    echo '----------- gew1 ------------'
+    dig _spotify-${1}._grpc.services.gew1.spotify.net srv +short
+    echo '----------- gae2 ------------'
+    dig _spotify-${1}._grpc.services.gae2.spotify.net srv +short
+    echo '----------- guc3 ------------'
+    dig _spotify-${1}._grpc.services.guc3.spotify.net srv +short
+    echo '============================='
+}
+
+function helios-status() {
+    helios -d gew1,gae2,guc3 status -j ${1} -u mikegoeppner
+}
+
+function srv-help() {
+    echo '$SERVICE_NAME is service_discovery field in service-info.yaml'
+    echo '$PROTOCOL is _http, _hm'
+    echo '$POD_NAME is gew1, gae2, guc3'
+    echo 'dig _spotify-$SERVICE_NAME.$PROTOCOL.services.$POD_NAME.spotify.net srv +short'
+}
+
+eval "$(jenv init -)"
