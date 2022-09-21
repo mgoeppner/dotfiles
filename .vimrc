@@ -20,6 +20,11 @@ syntax on
 set completeopt=menuone
 
 " Plugins
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
 call plug#begin('~/.vim/plugins')
 
 " Color Scheme
@@ -35,6 +40,7 @@ Plug 'scrooloose/nerdtree'
 Plug 'easymotion/vim-easymotion'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'Valloric/YouCompleteMe'
+Plug 'haya14busa/incsearch.vim'
 
 Plug 'junegunn/fzf', { 'dir': '~/.vim/fzf', 'do': './install --bin' }
 Plug 'junegunn/fzf.vim'
@@ -82,6 +88,7 @@ set number relativenumber
 
 " Set line number color to dark grey
 highlight LineNr term=bold cterm=NONE ctermfg=DarkGrey ctermbg=NONE gui=NONE guifg=DarkGrey guibg=NONE
+highlight Search ctermfg=NONE ctermbg='Red' guibg='Red' guifg=NONE
 
 augroup numbertoggle
     autocmd!
@@ -102,7 +109,7 @@ set foldlevel=99
 autocmd Syntax c,cpp,vim,xml,html,xhtml setlocal foldmethod=syntax
 
 let g:airline_powerline_fonts=1
-let g:airline_theme='hybridcustom'
+let g:airline_theme='powerlineish'
 let g:airline_skip_empty_sections=1
 let g:airline_section_z=airline#section#create(['windowswap', '%3p%% ', 'linenr', ':%3v'])
 let g:airline#extensions#tabline#enabled=1
@@ -122,10 +129,11 @@ let g:bufExplorerSplitHorzSize=38
 
 " Linter conf
 let g:ale_php_phpcs_standard='PSR2'
+let g:ale_c_parse_compile_commands = 1
 
 let g:ycm_autoclose_preview_window_after_insertion=1
 
-let $FZF_DEFAULT_COMMAND = 'ag -g ""'
+let $FZF_DEFAULT_COMMAND = 'rg --files'
 
 command W w
 command Wq wq
@@ -142,8 +150,21 @@ nmap <S-Tab> :bprevious<cr>
 nmap <Leader>: :Commands<cr>
 
 " Code searching
-nmap <Leader><S-f> :Ag<space>
-nmap <Leader>f :Ag<space><C-R><C-W><cr>
+map /  <Plug>(incsearch-forward)
+map ?  <Plug>(incsearch-backward)
+map g/ <Plug>(incsearch-stay)
+
+set hlsearch
+let g:incsearch#auto_nohlsearch = 1
+map n  <Plug>(incsearch-nohl-n)
+map N  <Plug>(incsearch-nohl-N)
+map *  <Plug>(incsearch-nohl-*)
+map #  <Plug>(incsearch-nohl-#)
+map g* <Plug>(incsearch-nohl-g*)
+map g# <Plug>(incsearch-nohl-g#)
+
+nmap <Leader><S-f> :Rg<space>
+nmap <Leader>f :Rg<space><C-R><C-W><cr>
 nmap <Leader>/ :BLines<space>
 nmap <Leader>t :BTag<cr>
 nmap <Leader><S-t> :Tags<space>
@@ -158,6 +179,7 @@ nmap <Leader>w :set list!<cr>
 
 " EasyMotion
 nmap <Enter> <Plug>(easymotion-prefix)
+nmap z <Plug>(easymotion-overwin-f2)
 
 " Remap Ctrl-W to Space
 nnoremap <Space> <C-w>

@@ -2,7 +2,8 @@ export DEFAULT_USER=mgoeppner
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 export EDITOR='vim'
-export POWERLINE="/usr/local/lib/python2.7/site-packages/powerline"
+export POWERLINE="/usr/share/powerline"
+export GPG_TTY=$(tty)
 
 export XDG_CACHE_HOME=${HOME}/.cache
 export XDG_CONFIG_HOME=${HOME}/.config
@@ -36,8 +37,8 @@ setopt share_history          # share command history data
 
 test -e ~/.zshrc.vimode && source ~/.zshrc.vimode
 
-POWERLINE_ZSH=${POWERLINE}/bindings/zsh/powerline.zsh
-test -e ${POWERLINE_ZSH} && powerline-daemon -q && source ${POWERLINE_ZSH}
+export POWERLINE_ZSH=${POWERLINE}/bindings/zsh/powerline.zsh
+test -e ${POWERLINE_ZSH} && source ${POWERLINE_ZSH}
 
 # Aliases
 alias cls="clear"
@@ -50,20 +51,17 @@ test -e ~/.zshrc.home && source ~/.zshrc.home
 test -e ~/.zshrc.work && source ~/.zshrc.work
 
 # Setup pyenv and pyenv-virtualenv
+export PYENV_ROOT="~/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
 export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
 if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi
 
-test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+function to-hex() {
+    echo "obase=16; $1" | bc 
+}
 
-DEFAULT_TMUX_SESSION="shell"
-if [ -z "$TMUX" ]; then
-    if [ -z $(tmux ls -F "#{session_name}" | grep ${DEFAULT_TMUX_SESSION}) ]; then
-        exec tmux new -s ${DEFAULT_TMUX_SESSION}
-    else
-        session=$(tmux list-sessions -F "#{session_name}" 2>/dev/null | fzf --exit-0)
-        exec tmux attach -t ${session}
-    fi 
-fi
-
-
+function to-decimal() {
+    echo "obase=10; $1" | bc 
+}
+export PATH=~/.local/bin:"$PATH"
