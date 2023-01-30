@@ -53,7 +53,7 @@ test -e ~/.zshrc.home && source ~/.zshrc.home
 test -e ~/.zshrc.work && source ~/.zshrc.work
 
 # Setup pyenv and pyenv-virtualenv
-export PYENV_ROOT="~/.pyenv"
+export PYENV_ROOT="${HOME}/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
 export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
