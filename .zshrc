@@ -2,12 +2,14 @@ export DEFAULT_USER=mgoeppner
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 export EDITOR='vim'
-export POWERLINE="/usr/share/powerline"
+export POWERLINE="${HOME}/.local/lib/python3.10/site-packages/powerline"
 export GPG_TTY=$(tty)
 
 export XDG_CACHE_HOME=${HOME}/.cache
 export XDG_CONFIG_HOME=${HOME}/.config
 export XDG_DATA_HOME=${HOME}/.config
+
+export PATH=~/.local/bin:"$PATH"
 
 if [ ! -d ${XDG_CACHE_HOME} ]; then
     mkdir -p ${XDG_CACHE_HOME}
@@ -64,4 +66,3 @@ function to-hex() {
 function to-decimal() {
     echo "obase=10; $1" | bc 
 }
-export PATH=~/.local/bin:"$PATH"
