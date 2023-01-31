@@ -1,0 +1,8 @@
+clients:
+  chromium: chrome
+  firefox: firefox
+  x-terminal-emulator: terminal
+  alacritty: terminal
+  vim: pen-to-square
+deliminator: " · "
+default_icon: dot-circle
