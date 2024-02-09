@@ -7,7 +7,6 @@ export GPG_TTY=$(tty)
 
 export XDG_CACHE_HOME=${HOME}/.cache
 export XDG_CONFIG_HOME=${HOME}/.config
-export XDG_DATA_HOME=${HOME}/.config
 
 export PATH=~/.local/bin:"$PATH"
 
@@ -66,3 +65,10 @@ function to-hex() {
 function to-decimal() {
     echo "obase=10; $1" | bc 
 }
+
+# bun completions
+[ -s "/home/mgoeppner/.bun/_bun" ] && source "/home/mgoeppner/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
